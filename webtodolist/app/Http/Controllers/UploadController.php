@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use App\Models\Item;
 
 class UploadController extends Controller
@@ -15,6 +14,7 @@ class UploadController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
+            'name' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'required|image|max:2048',
         ]);
@@ -37,6 +37,7 @@ class UploadController extends Controller
             $item = Item::create([
                 'user_id' => $user->user_id,
                 'username' => $user->username,
+                'name' => $request->name,
                 'description' => $request->description,
                 'image_url' => $url,
                 'status' => 'กำลังดำเนินการ'

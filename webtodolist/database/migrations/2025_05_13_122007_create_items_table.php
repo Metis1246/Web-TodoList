@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('user_id', 10);
             $table->string('username');
+            $table->string('name');
             $table->text('description');
             $table->string('image_url');
             $table->string('status')->default('กำลังดำเนินการ');

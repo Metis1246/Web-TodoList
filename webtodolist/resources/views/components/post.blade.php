@@ -38,7 +38,7 @@
     </div>
 </div>
 
-<!-- เพิ่ม SweetAlert 2 จาก CDN -->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
@@ -48,7 +48,7 @@
 
     function closeModal() {
         document.getElementById('modal').classList.add('hidden');
-        // รีเซ็ตฟอร์มเมื่อปิด Modal
+
         document.getElementById('uploadForm').reset();
     }
 
@@ -58,7 +58,7 @@
         const formData = new FormData(this);
         const submitButton = this.querySelector('button[type="submit"]');
 
-        // ปิดปุ่มขณะกำลังส่งข้อมูล
+
         submitButton.disabled = true;
         submitButton.innerHTML = 'กำลังบันทึก...';
 
