@@ -126,11 +126,12 @@
                                 <div class="flex items-center space-x-3">
                                     <div
                                         class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                                        @if ($comment->user->profile_image)
-                                            <img src="{{ $comment->user->profile_image }}"
-                                                alt="{{ $comment->user->name }}" class="w-full h-full object-cover">
+                                        @if ($item->user->profile_image)
+                                            <img src="{{ $item->user->profile_image }}" alt="{{ $item->user->username }}"
+                                                class="w-full h-full object-cover">
                                         @else
-                                            <span class="text-gray-500">{{ substr($comment->user->name, 0, 1) }}</span>
+                                            <span
+                                                class="text-gray-500 text-xl">{{ substr($item->user->username, 0, 1) }}</span>
                                         @endif
                                     </div>
                                     <div>
