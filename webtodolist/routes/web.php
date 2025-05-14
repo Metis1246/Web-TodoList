@@ -10,14 +10,10 @@ Route::get('/items/filter', [ItemController::class, 'filter']);
 
 Route::get('/posts/{id}', [ItemController::class, 'show'])->name('posts.show');
 
-
-Route::get('/posts/{id}/edit', [ItemController::class, 'edit'])->name('posts.edit')->middleware('auth');
-
-
-Route::put('/posts/{id}', [ItemController::class, 'update'])->name('posts.update')->middleware('auth');
-
-
-Route::delete('/posts/{id}', [ItemController::class, 'destroy'])->name('posts.destroy')->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::put('/posts/{id}', [ItemController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{id}', [ItemController::class, 'destroy'])->name('posts.destroy');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -29,8 +25,4 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/upload', [UploadController::class, 'upload']);
-    Route::get('/items/{id}/edit', [ItemController::class, 'edit']);
-    Route::put('/items/{id}', [ItemController::class, 'update'])->name('items.update');
-    Route::delete('/items/{id}', [ItemController::class, 'destroy']);
-    Route::put('/items/{id}/status', [ItemController::class, 'updateStatus']);
 });

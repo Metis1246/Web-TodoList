@@ -20,10 +20,10 @@
                 <div class="flex items-center">
                     <div class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center mr-4 overflow-hidden">
                         @if ($item->user->profile_image)
-                            <img src="{{ $item->user->profile_image }}" alt="{{ $item->user->name }}"
+                            <img src="{{ $item->user->profile_image }}" alt="{{ $item->user->username }}"
                                 class="w-full h-full object-cover">
                         @else
-                            <span class="text-gray-500 text-xl">{{ substr($item->user->name, 0, 1) }}</span>
+                            <span class="text-gray-500 text-xl">{{ substr($item->user->username, 0, 1) }}</span>
                         @endif
                     </div>
                     <div>
@@ -39,11 +39,19 @@
                     </div>
                 </div>
 
-                <!-- ปุ่มจัดการโพสต์ (แสดงเฉพาะเจ้าของโพสต์) -->
                 @auth
-                    @if (auth()->id() == $item->user_id)
+                    <!-- Debug Section -->
+                    <div style="display: none;">
+                        Debug Info:<br>
+                        Auth ID: {{ auth()->id() }}<br>
+                        Item User ID: {{ $item->user_id }}<br>
+                        Is Owner: {{ auth()->id() == $item->user_id ? 'YES' : 'NO' }}<br>
+                        Item Data: {{ json_encode($item) }}
+                    </div>
+
+                    @if ($isOwner)
                         <div class="relative">
-                            <!-- ปุ่มหลัก -->
+                            <!-- ปุ่มเมนู -->
                             <button id="post-menu-button" class="p-2 rounded-full hover:bg-gray-100 focus:outline-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" viewBox="0 0 20 20"
                                     fill="currentColor">
@@ -51,19 +59,18 @@
                                         d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                                 </svg>
                             </button>
-
-                            <!-- เมนู Dropdown -->
+                            <!-- เมนู dropdown -->
                             <div id="post-menu"
                                 class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
                                 <div class="py-1">
                                     <a href="#" onclick="openEditModal()"
                                         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">แก้ไขโพสต์</a>
-                                    <form action="{{ route('posts.destroy', $item->id) }}" method="POST">
+                                    <form id="delete-post-form-{{ $item->id }}"
+                                        action="{{ route('posts.destroy', $item->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
-                                            class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 hover:text-red-800"
-                                            onclick="return confirm('คุณแน่ใจที่จะลบโพสต์นี้หรือไม่?')">
+                                        <button type="button" onclick="confirmDelete({{ $item->id }})"
+                                            class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 hover:text-red-800">
                                             ลบโพสต์
                                         </button>
                                     </form>
@@ -88,9 +95,8 @@
         </div>
     </div>
 
-    <!-- Modal แก้ไขโพสต์ -->
     @auth
-        @if (auth()->id() == $item->user_id)
+        @if ($isOwner)
             <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 p-4">
                 <div class="bg-white rounded-lg p-6 w-full max-w-md">
                     <div class="flex justify-between items-center mb-4">
@@ -159,7 +165,6 @@
             </div>
 
             <script>
-                // ฟังก์ชันจัดการเมนู
                 document.addEventListener('DOMContentLoaded', function() {
                     const menuButton = document.getElementById('post-menu-button');
                     if (menuButton) {
@@ -170,7 +175,6 @@
                         });
                     }
 
-                    // ปิดเมนูเมื่อคลิกที่อื่น
                     document.addEventListener('click', function() {
                         const menu = document.getElementById('post-menu');
                         if (menu && !menu.classList.contains('hidden')) {
@@ -179,7 +183,6 @@
                     });
                 });
 
-                // ฟังก์ชันจัดการ Modal
                 function openEditModal() {
                     document.getElementById('edit-modal').classList.remove('hidden');
                     document.body.classList.add('overflow-hidden');
@@ -188,6 +191,46 @@
                 function closeEditModal() {
                     document.getElementById('edit-modal').classList.add('hidden');
                     document.body.classList.remove('overflow-hidden');
+                }
+
+                function confirmDelete(itemId) {
+                    Swal.fire({
+                        title: 'คุณแน่ใจหรือไม่?',
+                        text: "การลบโพสต์นี้ไม่สามารถย้อนกลับได้!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'ลบโพสต์',
+                        cancelButtonText: 'ยกเลิก'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // ส่ง request ลบโพสต์
+                            fetch(`/posts/${itemId}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json'
+                                    }
+                                })
+                                .then(response => {
+                                    if (response.redirected) {
+                                        window.location.href = response.url;
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    if (data.redirect) {
+                                        window.location.href = data.redirect;
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถลบโพสต์ได้', 'error');
+                                });
+                        }
+                    });
                 }
             </script>
         @endif
