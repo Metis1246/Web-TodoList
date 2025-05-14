@@ -10,6 +10,15 @@ Route::get('/items/filter', [ItemController::class, 'filter']);
 
 Route::get('/posts/{id}', [ItemController::class, 'show'])->name('posts.show');
 
+
+Route::get('/posts/{id}/edit', [ItemController::class, 'edit'])->name('posts.edit')->middleware('auth');
+
+
+Route::put('/posts/{id}', [ItemController::class, 'update'])->name('posts.update')->middleware('auth');
+
+
+Route::delete('/posts/{id}', [ItemController::class, 'destroy'])->name('posts.destroy')->middleware('auth');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);

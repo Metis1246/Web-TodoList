@@ -39,6 +39,12 @@ class ItemController extends Controller
     }
 
 
+    public function show($id)
+    {
+        $item = Item::with('user')->findOrFail($id);
+        return view('posts.show', compact('item'));
+    }
+
     public function filter(Request $request)
     {
         $query = Item::with('user')->orderBy('created_at', 'desc');

@@ -90,6 +90,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             closeModal();
+                            loadFilteredPosts();
                         }
                     });
 
