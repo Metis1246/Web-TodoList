@@ -98,8 +98,9 @@
                         <!-- รูปภาพโพสต์ -->
                         @if ($item->image_url)
                             <div class="mb-3 h-48 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
-                                <img src="{{ $item->image_url }}" alt="{{ $item->name }}"
-                                    class="max-w-full max-h-full object-contain">
+                                <img src="{{ str_replace('//', '/', $item->image_url) }}" alt="{{ $item->name }}"
+                                    class="max-w-full max-h-full object-contain"
+                                    onerror="this.onerror=null;this.src='https://via.placeholder.com/300';">
                             </div>
                         @endif
                     </a>
@@ -175,8 +176,8 @@
                     <p class="text-gray-700 mb-3">${item.description}</p>
                     ${item.image_url ? 
                         `<div class="mb-3 h-48 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
-                                    <img src="${item.image_url}" alt="${item.name}" class="max-w-full max-h-full object-contain">
-                                </div>` : ''}
+                                            <img src="${item.image_url}" alt="${item.name}" class="max-w-full max-h-full object-contain">
+                                        </div>` : ''}
                 </a>
             </div>
         `;

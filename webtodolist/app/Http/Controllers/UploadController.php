@@ -45,7 +45,7 @@ class UploadController extends Controller
             }
 
             // สร้าง URL ด้วยตนเอง
-            $url = config('filesystems.disks.s3.url') . '/' . $path;
+            $url = 'https://' . env('AWS_BUCKET') . '.s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . $path;
 
             $item = Item::create([
                 'user_id' => $user->user_id,
@@ -74,6 +74,7 @@ class UploadController extends Controller
             ], 500);
         }
     }
+
     public function updateStatus(Request $request, $id)
     {
         $request->validate([

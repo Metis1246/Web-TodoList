@@ -5,7 +5,7 @@
 @section('content')
     <div class="w-full max-w-4xl mx-auto p-4">
         <div class="mt-6 pb-5">
-            <a href="{{ url()->previous() }}" class="inline-flex items-center text-blue-400 hover:text-blue-600">
+            <a href="/" class="inline-flex items-center text-blue-400 hover:text-blue-600">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd"
                         d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
@@ -88,8 +88,9 @@
             <!-- รูปภาพโพสต์ -->
             @if ($item->image_url)
                 <div class="mb-6 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
-                    <img src="{{ $item->image_url }}" alt="{{ $item->name }}"
-                        class="w-full max-h-[70vh] object-contain">
+                    <img src="{{ str_replace('//', '/', $item->image_url) }}" alt="{{ $item->name }}"
+                        class="w-full max-h-[70vh] object-contain"
+                        onerror="this.onerror=null;this.src='https://via.placeholder.com/300';">
                 </div>
             @endif
         </div>
