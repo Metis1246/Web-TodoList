@@ -7,7 +7,7 @@
         <div class="rounded-lg p-4 bg-white">
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center space-x-4">
-                    <!-- Dropdown ประเภทโพสต์ -->
+
                     <div class="relative">
                         <button id="postTypeDropdownButton"
                             class="flex items-center text-xl font-bold text-blue-400 text-left font-kanit">
@@ -27,7 +27,7 @@
                         </div>
                     </div>
 
-                    <!-- Dropdown สถานะ -->
+
                     <div class="relative">
                         <button id="statusDropdownButton"
                             class="flex items-center text-xl font-bold text-blue-400 text-left font-kanit">
@@ -62,12 +62,12 @@
             </div>
         </div>
 
-        <!-- ส่วนแสดงรายการโพสต์ -->
+
         <div id="postsContainer" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
             @foreach ($items as $item)
                 <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300">
                     <a href="{{ route('posts.show', $item->id) }}" class="block">
-                        <!-- ส่วนหัวโพสต์ -->
+
                         <div class="flex items-center mb-3">
                             <div
                                 class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center mr-3 overflow-hidden">
@@ -91,11 +91,11 @@
                             </div>
                         </div>
 
-                        <!-- เนื้อหาโพสต์ -->
+
                         <h4 class="text-xl font-bold mb-2">{{ $item->name }}</h4>
                         <p class="text-gray-700 mb-3">{{ $item->description }}</p>
 
-                        <!-- รูปภาพโพสต์ -->
+
                         @if ($item->image_url)
                             <div class="mb-3 h-48 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
                                 <img src="{{ str_replace('//', '/', $item->image_url) }}" alt="{{ $item->name }}"
@@ -110,13 +110,12 @@
     </div>
 
     @auth
-        <!-- Modal สำหรับเพิ่มโพสต์ใหม่ -->
+
         @include('components.post')
     @endauth
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // ตัวแปรเก็บสถานะปัจจุบัน
         let currentPostType = 'all';
         let currentStatus = 'all';
 
@@ -176,8 +175,8 @@
                     <p class="text-gray-700 mb-3">${item.description}</p>
                     ${item.image_url ? 
                         `<div class="mb-3 h-48 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
-                                                <img src="${item.image_url}" alt="${item.name}" class="max-w-full max-h-full object-contain">
-                                            </div>` : ''}
+                                                    <img src="${item.image_url}" alt="${item.name}" class="max-w-full max-h-full object-contain">
+                                                </div>` : ''}
                 </a>
             </div>
         `;
@@ -186,7 +185,7 @@
         }
 
 
-        // Event listeners สำหรับ dropdown
+
         document.querySelectorAll('.post-type-option').forEach(option => {
             option.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -209,7 +208,7 @@
             });
         });
 
-        // ฟังก์ชันจัดการ Modal
+
         function openModal() {
             document.getElementById('modal').classList.remove('hidden');
         }
@@ -219,7 +218,7 @@
             document.getElementById('uploadForm').reset();
         }
 
-        // Dropdown menus
+
         const postTypeDropdownButton = document.getElementById('postTypeDropdownButton');
         const postTypeDropdownMenu = document.getElementById('postTypeDropdownMenu');
         const statusDropdownButton = document.getElementById('statusDropdownButton');
@@ -242,7 +241,7 @@
         });
 
         document.addEventListener('click', function(event) {
-            // ปิด dropdown เมื่อคลิกที่อื่น
+
             if (!postTypeDropdownButton.contains(event.target) && !postTypeDropdownMenu.contains(event.target)) {
                 postTypeDropdownMenu.classList.add('hidden');
             }
@@ -250,7 +249,7 @@
                 statusDropdownMenu.classList.add('hidden');
             }
 
-            // อนุญาตให้คลิกที่ลิงก์ทำงานปกติ
+
             if (event.target.closest('a') && !event.target.closest('.post-type-option') && !event.target.closest(
                     '.status-option')) {
                 return true;

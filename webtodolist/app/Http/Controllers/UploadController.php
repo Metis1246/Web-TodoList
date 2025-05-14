@@ -33,18 +33,18 @@ class UploadController extends Controller
             $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
             $path = 'img/' . $filename;
 
-            // ใช้ put แทน putFileAs และปิดการใช้ ACL
+
             $uploaded = Storage::disk('s3')->put(
                 $path,
                 file_get_contents($file->getRealPath()),
-                ['visibility' => null] // ไม่ใช้ ACL
+                ['visibility' => null]
             );
 
             if (!$uploaded) {
                 throw new \Exception('อัปโหลดไฟล์ล้มเหลว');
             }
 
-            // สร้าง URL ด้วยตนเอง
+
             $url = 'https://' . env('AWS_BUCKET') . '.s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . $path;
 
             $item = Item::create([

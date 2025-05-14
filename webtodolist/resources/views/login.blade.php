@@ -42,11 +42,10 @@
     </div>
 
     <script>
-        // SweetAlert2 สำหรับการส่งฟอร์ม
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // ส่งข้อมูล Ajax
+
             fetch(this.action, {
                     method: 'POST',
                     body: new FormData(this),

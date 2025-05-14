@@ -56,7 +56,7 @@ class AuthController extends Controller
             $user->username = $request->username;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
-            $user->save(); // ใช้ save() แทน create() เพื่อให้ boot method ทำงาน
+            $user->save();
 
             if ($user && $user->exists) {
                 if ($request->ajax() || $request->wantsJson()) {

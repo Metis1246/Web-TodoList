@@ -29,7 +29,7 @@
             flex-shrink: 0;
         }
 
-        /* สไตล์สำหรับเมนู Mobile */
+
         @media (max-width: 767px) {
             #buttons {
                 position: absolute;
@@ -97,14 +97,14 @@
     <div id="app">
         <header class="w-full max-w-7xl mx-auto px-5 py-2 bg-white relative">
             <div class="w-full flex flex-wrap items-center justify-between">
-                <!-- Logo -->
+
                 <div class="flex items-center gap-4">
                     <a href="/" class="inline-flex items-center">
                         <h1 class="text-4xl font-bold text-blue-400">PlanOnPoint</h1>
                     </a>
                 </div>
 
-                <!-- Menu Toggle for Mobile -->
+
                 <button id="menu-toggle" class="md:hidden p-1 focus:outline-none absolute right-5 top-5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -115,7 +115,7 @@
                     </svg>
                 </button>
 
-                <!-- Buttons -->
+
                 <div id="buttons" class="hidden md:flex gap-3 w-full md:w-auto mt-6 md:mt-0">
                     @guest
                         <a href="{{ route('login') }}"
