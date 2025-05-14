@@ -50,12 +50,13 @@ class AuthController extends Controller
                 ->withInput();
         }
 
+
         try {
-            $user = User::create([
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
+            $user = new User();
+            $user->username = $request->username;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->save(); // ใช้ save() แทน create() เพื่อให้ boot method ทำงาน
 
             if ($user && $user->exists) {
                 if ($request->ajax() || $request->wantsJson()) {
@@ -68,7 +69,7 @@ class AuthController extends Controller
                     ->with('success', 'สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
             }
         } catch (\Exception $e) {
-            \Log::error('Registration error: ' . $e->getMessage());
+            Log::error('Registration error: ' . $e->getMessage());
 
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([

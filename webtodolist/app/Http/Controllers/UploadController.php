@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\Item;
+use Illuminate\Support\Facades\Log;
 
 class UploadController extends Controller
 {
@@ -23,16 +24,28 @@ class UploadController extends Controller
             DB::beginTransaction();
 
             $user = Auth::user();
+            $file = $request->file('image');
 
-            $filename = Str::random(40) . '.' . $request->file('image')->getClientOriginalExtension();
-            $s3Path = 'img/' . $filename;
-            $uploaded = Storage::disk('s3')->putFileAs('img', $request->file('image'), $filename);
-
-            if (!$uploaded) {
-                throw new \Exception('การอัพโหลดไฟล์ล้มเหลว');
+            if (!$file->isValid()) {
+                throw new \Exception('ไฟล์ไม่ถูกต้อง');
             }
 
-            $url = Storage::disk('s3')->url($s3Path);
+            $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $path = 'img/' . $filename;
+
+            // ใช้ put แทน putFileAs และปิดการใช้ ACL
+            $uploaded = Storage::disk('s3')->put(
+                $path,
+                file_get_contents($file->getRealPath()),
+                ['visibility' => null] // ไม่ใช้ ACL
+            );
+
+            if (!$uploaded) {
+                throw new \Exception('อัปโหลดไฟล์ล้มเหลว');
+            }
+
+            // สร้าง URL ด้วยตนเอง
+            $url = config('filesystems.disks.s3.url') . '/' . $path;
 
             $item = Item::create([
                 'user_id' => $user->user_id,
@@ -52,13 +65,15 @@ class UploadController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Upload Error: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+
             return response()->json([
-                'message' => 'เกิดข้อผิดพลาด',
-                'error' => $e->getMessage(),
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาด: ' . $e->getMessage(),
             ], 500);
         }
     }
-
     public function updateStatus(Request $request, $id)
     {
         $request->validate([

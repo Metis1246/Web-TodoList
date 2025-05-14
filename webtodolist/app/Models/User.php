@@ -29,16 +29,21 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    // ตั้งค่าหลัก
+    protected $primaryKey = 'user_id';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
+    // สร้าง UUID ก่อนบันทึก
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($user) {
-            do {
-                $userId = Str::random(10);
-            } while (self::where('user_id', $userId)->exists());
-
-            $user->user_id = $userId;
+            // ตรวจสอบว่าไม่มี user_id มาก่อนแล้วค่อยสร้าง
+            if (empty($user->user_id)) {
+                $user->user_id = (string) Str::uuid();
+            }
         });
     }
 

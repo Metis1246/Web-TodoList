@@ -39,7 +39,7 @@ class ItemController extends Controller
     public function show($id)
     {
         $item = Item::with('user')->findOrFail($id);
-        $isOwner = auth()->check() && (auth()->user()->user_id === $item->user_id);
+        $isOwner = auth()->check() &&  (auth()->id() == $item->user_id);
 
         return view('posts.show', [
             'item' => $item,
@@ -63,6 +63,7 @@ class ItemController extends Controller
 
         return response()->json(['items' => $items]);
     }
+
     public function update(Request $request, $id)
     {
         try {
@@ -72,12 +73,13 @@ class ItemController extends Controller
                 'input' => $request->all()
             ]);
 
+            Log::info('Update request', ['data' => $request->all()]);
+
             $item = Item::findOrFail($id);
 
             if ($item->user_id != auth()->id()) {
                 throw new \Exception('Unauthorized', 403);
             }
-
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
                 'description' => 'required|string',
@@ -111,8 +113,7 @@ class ItemController extends Controller
 
             Log::info('Update successful', ['item_id' => $id]);
 
-            return redirect()->route('posts.show', $id)
-                ->with('success', 'อัปเดตโพสต์เรียบร้อยแล้ว');
+            return redirect()->route('posts.show', $id);
         } catch (\Exception $e) {
             Log::error('Update error', [
                 'error' => $e->getMessage(),
@@ -130,7 +131,7 @@ class ItemController extends Controller
         try {
             $item = Item::findOrFail($id);
 
-            if ($item->user_id != auth()->user()->user_id) {
+            if ($item->user_id != auth()->id()) {
                 return back()->with('error', 'คุณไม่มีสิทธิ์ลบโพสต์นี้');
             }
 
