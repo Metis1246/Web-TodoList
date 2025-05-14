@@ -23,35 +23,97 @@
         .content-wrap {
             flex: 1 0 auto;
             padding-bottom: 4rem;
-            /* ปรับตามความสูงของ footer */
         }
 
         .footer {
             flex-shrink: 0;
+        }
+
+        /* สไตล์สำหรับเมนู Mobile */
+        @media (max-width: 767px) {
+            #buttons {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background: white;
+                padding: 1.5rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                z-index: 50;
+                min-width: 200px;
+                display: none;
+                flex-direction: column;
+            }
+
+            #buttons.mobile-menu {
+                display: flex;
+            }
+
+            #buttons a,
+            #buttons>div {
+                margin-bottom: 1.5rem;
+                width: 100%;
+                text-align: center;
+            }
+
+            #buttons a:last-child,
+            #buttons>div:last-child {
+                margin-bottom: 0;
+            }
+
+            #buttons .bg-blue-400 {
+                margin-bottom: 1.5rem;
+            }
+
+            #buttons .bg-gray-300 {
+                margin-bottom: 0;
+            }
+
+            #buttons .flex.items-center.gap-3 {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            #buttons .flex.items-center.gap-3 span {
+                text-align: center;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid #e5e7eb;
+                margin-bottom: 1rem;
+            }
+
+            #buttons .flex.items-center.gap-3 form {
+                width: 100%;
+            }
+
+            #buttons .flex.items-center.gap-3 button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 
 <body class="font-sans flex flex-col min-h-screen">
     <div id="app">
-        <header class="w-full max-w-7xl mx-auto px-5 py-2 bg-white">
-            <div class="w-full flex flex-wrap items-center justify-between relative">
+        <header class="w-full max-w-7xl mx-auto px-5 py-2 bg-white relative">
+            <div class="w-full flex flex-wrap items-center justify-between">
                 <!-- Logo -->
                 <div class="flex items-center gap-4">
                     <a href="/" class="inline-flex items-center">
                         <h1 class="text-4xl font-bold text-blue-400">PlanOnPoint</h1>
                     </a>
-                    <!-- Menu Toggle for Mobile -->
-                    <button id="menu-toggle" class="md:hidden p-1 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
-                        </svg>
-                    </button>
                 </div>
+
+                <!-- Menu Toggle for Mobile -->
+                <button id="menu-toggle" class="md:hidden p-1 focus:outline-none absolute right-5 top-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
 
                 <!-- Buttons -->
                 <div id="buttons" class="hidden md:flex gap-3 w-full md:w-auto mt-6 md:mt-0">
@@ -95,11 +157,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const menuToggle = document.getElementById('menu-toggle');
-            const navLinks = document.getElementById('nav-links');
             const buttons = document.getElementById('buttons');
 
             menuToggle.addEventListener('click', function() {
-                navLinks?.classList?.toggle('hidden');
+                buttons.classList.toggle('mobile-menu');
                 buttons.classList.toggle('hidden');
             });
         });

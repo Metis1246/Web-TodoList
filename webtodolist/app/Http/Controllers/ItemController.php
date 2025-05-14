@@ -6,13 +6,31 @@ use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
+
 class ItemController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $items = Item::with('user')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Item::with('user')->orderBy('created_at', 'desc');
+
+        // กรองตามประเภทโพสต์
+        if ($request->has('type') && $request->type === 'mine') {
+            $query->where('user_id', auth()->id());
+        }
+
+        // กรองตามสถานะ
+        if ($request->has('status') && in_array($request->status, ['กำลังดำเนินการ', 'ดำเนินการเสร็จแล้ว'])) {
+            $query->where('status', $request->status);
+        }
+
+        $items = $query->get();
+
+        // ถ้าเป็น request AJAX ให้ส่งกลับเป็น JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'items' => $items
+            ]);
+        }
 
         return view('index', [
             'items' => $items,
@@ -20,37 +38,23 @@ class ItemController extends Controller
         ]);
     }
 
-    public function destroy($id)
-    {
-        $item = Item::findOrFail($id);
 
-        if ($item->user_id != auth()->user()->user_id) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+    public function filter(Request $request)
+    {
+        $query = Item::with('user')->orderBy('created_at', 'desc');
+
+        if ($request->has('type') && $request->type === 'mine') {
+            $query->where('user_id', auth()->user()->user_id);
         }
 
-        $item->delete();
-
-        return response()->json(['success' => true]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $item = Item::findOrFail($id);
-
-        if ($item->user_id != auth()->user()->user_id) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+        if ($request->has('status') && in_array($request->status, ['กำลังดำเนินการ', 'ดำเนินการเสร็จแล้ว'])) {
+            $query->where('status', $request->status);
         }
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
+        $items = $query->get();
 
-        $item->update([
-            'name' => $request->name,
-            'description' => $request->description,
+        return response()->json([
+            'items' => $items
         ]);
-
-        return response()->json(['success' => true, 'item' => $item]);
     }
 }
