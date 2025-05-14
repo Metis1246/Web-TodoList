@@ -81,10 +81,10 @@
                             <div>
                                 <h3 class="font-bold">{{ $item->username }}</h3>
                                 <div class="flex items-center text-sm text-gray-500">
-                                    <p>{{ $item->created_at->format('d/m/Y H:i') }}</p>
+                                    <p>{{ $item->updated_at->timezone('Asia/Bangkok')->format('d/m/Y H:i') }}</p>
                                     <span
-                                        class="ml-2 px-3 py-1 rounded-full text-sm 
-                                        {{ $item->status === 'กำลังดำเนินการ' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
+                                        class="ml-3 px-3 py-1 rounded-full text-sm 
+        {{ $item->status === 'กำลังดำเนินการ' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
                                         {{ $item->status }}
                                     </span>
                                 </div>
@@ -176,8 +176,8 @@
                     <p class="text-gray-700 mb-3">${item.description}</p>
                     ${item.image_url ? 
                         `<div class="mb-3 h-48 flex items-center justify-center bg-gray-100 rounded-lg overflow-hidden">
-                                            <img src="${item.image_url}" alt="${item.name}" class="max-w-full max-h-full object-contain">
-                                        </div>` : ''}
+                                                <img src="${item.image_url}" alt="${item.name}" class="max-w-full max-h-full object-contain">
+                                            </div>` : ''}
                 </a>
             </div>
         `;

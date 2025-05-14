@@ -96,6 +96,8 @@ class ItemController extends Controller
 
             $data = $request->only(['name', 'description', 'status']);
 
+
+
             if ($request->hasFile('image')) {
                 Log::info('Processing image upload');
                 if ($item->image_url) {
